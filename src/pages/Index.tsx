@@ -2,7 +2,7 @@ import TacticsBoard from "@/components/TacticsBoard";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
@@ -22,7 +22,7 @@ const Index = () => {
       </header>
 
       {/* Main content */}
-      <main className="py-6 lg:py-10">
+      <main className="flex-1 min-h-0">
         <TacticsBoard />
       </main>
     </div>

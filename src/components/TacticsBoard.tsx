@@ -45,14 +45,15 @@ const TacticsBoard: React.FC = () => {
   const selectedPlayer = players.find((p) => p.id === selectedId);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 items-start w-full max-w-7xl mx-auto p-4 lg:p-8">
+    <div className="flex flex-col lg:flex-row gap-4 items-stretch w-full h-full p-3 sm:p-4 lg:p-6">
       {/* Field */}
-      <div className="flex-1 min-w-0">
-        <div className="rounded-xl overflow-hidden border border-border bg-card shadow-2xl">
+      <div className="flex-1 min-w-0 min-h-0">
+        <div className="h-full rounded-xl overflow-hidden border border-border bg-card shadow-2xl">
           <svg
             ref={svgRef as React.RefObject<SVGSVGElement>}
             viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-            className="w-full h-auto"
+            preserveAspectRatio="xMidYMid meet"
+            className="w-full h-full"
             style={{ touchAction: "none" }}
             onPointerDown={(e) => {
               if (e.target === e.currentTarget) handleDeselect();
@@ -90,7 +91,7 @@ const TacticsBoard: React.FC = () => {
       </div>
 
       {/* Side panel */}
-      <div className="w-full lg:w-72 flex flex-col gap-4">
+      <div className="w-full lg:w-80 flex flex-col gap-4 lg:max-h-full lg:overflow-auto">
         <div className="rounded-xl border border-border bg-card p-5">
           <h2 className="text-lg font-bold text-foreground mb-1">⚽ Tactics Board</h2>
           <p className="text-sm text-muted-foreground mb-4">
