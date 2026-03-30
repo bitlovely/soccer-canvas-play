@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -46,6 +50,14 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        field: {
+          green: "hsl(var(--field-green))",
+          line: "hsl(var(--field-line))",
+        },
+        team: {
+          home: "hsl(var(--team-home))",
+          away: "hsl(var(--team-away))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
