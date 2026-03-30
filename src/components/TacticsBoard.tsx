@@ -4,19 +4,51 @@ import DraggablePlayer, { Player } from "./DraggablePlayer";
 
 const CX = PADDING + FIELD_WIDTH / 2;
 
-const initialPlayers: Player[] = [
-  // Home team (blue) — 4 players in a formation
-  { id: 1, x: CX, y: PADDING + 50, number: 1, team: "home", label: "GK" },
-  { id: 2, x: CX - 150, y: PADDING + 250, number: 4, team: "home", label: "CB" },
-  { id: 3, x: CX + 150, y: PADDING + 250, number: 5, team: "home", label: "CB" },
-  { id: 4, x: CX, y: PADDING + 420, number: 8, team: "home", label: "CM" },
+function create11v11(): Player[] {
+  const left = PADDING + 80;
+  const right = PADDING + FIELD_WIDTH - 80;
+  const yTop = PADDING + 70;
+  const yBottom = PADDING + FIELD_HEIGHT - 70;
 
-  // Away team (red) — 4 players
-  { id: 5, x: CX, y: PADDING + FIELD_HEIGHT - 50, number: 1, team: "away", label: "GK" },
-  { id: 6, x: CX - 150, y: PADDING + FIELD_HEIGHT - 250, number: 4, team: "away", label: "CB" },
-  { id: 7, x: CX + 150, y: PADDING + FIELD_HEIGHT - 250, number: 5, team: "away", label: "CB" },
-  { id: 8, x: CX, y: PADDING + FIELD_HEIGHT - 420, number: 9, team: "away", label: "ST" },
-];
+  const xL = CX - 240;
+  const xR = CX + 240;
+  const xML = CX - 140;
+  const xMR = CX + 140;
+
+  const home: Omit<Player, "id">[] = [
+    // 4-3-3 (home attacks "down" the original field)
+    { x: CX, y: yTop, number: 1, team: "home", label: "GK" },
+    { x: xL, y: PADDING + 260, number: 2, team: "home", label: "RB" },
+    { x: xML, y: PADDING + 240, number: 4, team: "home", label: "CB" },
+    { x: xMR, y: PADDING + 240, number: 5, team: "home", label: "CB" },
+    { x: xR, y: PADDING + 260, number: 3, team: "home", label: "LB" },
+    { x: xML, y: PADDING + 470, number: 6, team: "home", label: "DM" },
+    { x: CX, y: PADDING + 520, number: 8, team: "home", label: "CM" },
+    { x: xMR, y: PADDING + 470, number: 10, team: "home", label: "AM" },
+    { x: xL, y: PADDING + 720, number: 7, team: "home", label: "RW" },
+    { x: CX, y: PADDING + 780, number: 9, team: "home", label: "ST" },
+    { x: xR, y: PADDING + 720, number: 11, team: "home", label: "LW" },
+  ];
+
+  const away: Omit<Player, "id">[] = [
+    // mirrored 4-3-3 (away attacks "up" the original field)
+    { x: CX, y: yBottom, number: 1, team: "away", label: "GK" },
+    { x: xL, y: PADDING + FIELD_HEIGHT - 260, number: 2, team: "away", label: "RB" },
+    { x: xML, y: PADDING + FIELD_HEIGHT - 240, number: 4, team: "away", label: "CB" },
+    { x: xMR, y: PADDING + FIELD_HEIGHT - 240, number: 5, team: "away", label: "CB" },
+    { x: xR, y: PADDING + FIELD_HEIGHT - 260, number: 3, team: "away", label: "LB" },
+    { x: xML, y: PADDING + FIELD_HEIGHT - 470, number: 6, team: "away", label: "DM" },
+    { x: CX, y: PADDING + FIELD_HEIGHT - 520, number: 8, team: "away", label: "CM" },
+    { x: xMR, y: PADDING + FIELD_HEIGHT - 470, number: 10, team: "away", label: "AM" },
+    { x: xL, y: PADDING + FIELD_HEIGHT - 720, number: 7, team: "away", label: "RW" },
+    { x: CX, y: PADDING + FIELD_HEIGHT - 780, number: 9, team: "away", label: "ST" },
+    { x: xR, y: PADDING + FIELD_HEIGHT - 720, number: 11, team: "away", label: "LW" },
+  ];
+
+  return [...home, ...away].map((p, i) => ({ id: i + 1, ...p }));
+}
+
+const initialPlayers: Player[] = create11v11();
 
 const TacticsBoard: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -49,11 +81,12 @@ const TacticsBoard: React.FC = () => {
       {/* Field */}
       <div className="flex-1 min-w-0 min-h-0">
         <div className="h-full rounded-xl overflow-hidden border border-border bg-card shadow-2xl">
+          <div className="w-full h-full flex items-center justify-center overflow-hidden">
           <svg
             ref={svgRef as React.RefObject<SVGSVGElement>}
             viewBox={`0 0 ${SVG_W} ${SVG_H}`}
             preserveAspectRatio="xMidYMid meet"
-            className="w-full h-full"
+            className="max-w-full max-h-full w-auto h-auto rotate-90"
             style={{ touchAction: "none" }}
             onPointerDown={(e) => {
               if (e.target === e.currentTarget) handleDeselect();
@@ -87,6 +120,7 @@ const TacticsBoard: React.FC = () => {
               />
             )}
           </svg>
+          </div>
         </div>
       </div>
 
