@@ -84,41 +84,44 @@ const TacticsBoard: React.FC = () => {
           <div className="w-full h-full flex items-center justify-center overflow-hidden">
           <svg
             ref={svgRef as React.RefObject<SVGSVGElement>}
-            viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+            // Rotate the pitch to landscape *inside* SVG space so it still fits the layout.
+            viewBox={`0 0 ${SVG_H} ${SVG_W}`}
             preserveAspectRatio="xMidYMid meet"
-            className="max-w-full max-h-full w-auto h-auto rotate-90"
+            className="max-w-full max-h-full w-full h-full"
             style={{ touchAction: "none" }}
             onPointerDown={(e) => {
               if (e.target === e.currentTarget) handleDeselect();
             }}
           >
-            {/* Background */}
-            <rect width={SVG_W} height={SVG_H} fill="hsl(140, 40%, 18%)" rx={8} />
+            <g transform={`translate(${SVG_H} 0) rotate(90)`}>
+              {/* Background */}
+              <rect width={SVG_W} height={SVG_H} fill="hsl(140, 40%, 18%)" rx={8} />
 
-            <SoccerField />
+              <SoccerField />
 
-            {/* Render players — selected last for z-order */}
-            {players
-              .filter((p) => p.id !== selectedId)
-              .map((p) => (
+              {/* Render players — selected last for z-order */}
+              {players
+                .filter((p) => p.id !== selectedId)
+                .map((p) => (
+                  <DraggablePlayer
+                    key={p.id}
+                    player={p}
+                    selected={false}
+                    onSelect={handleSelect}
+                    onMove={handleMove}
+                    svgRef={svgRef as React.RefObject<SVGSVGElement>}
+                  />
+                ))}
+              {selectedPlayer && (
                 <DraggablePlayer
-                  key={p.id}
-                  player={p}
-                  selected={false}
+                  player={selectedPlayer}
+                  selected={true}
                   onSelect={handleSelect}
                   onMove={handleMove}
                   svgRef={svgRef as React.RefObject<SVGSVGElement>}
                 />
-              ))}
-            {selectedPlayer && (
-              <DraggablePlayer
-                player={selectedPlayer}
-                selected={true}
-                onSelect={handleSelect}
-                onMove={handleMove}
-                svgRef={svgRef as React.RefObject<SVGSVGElement>}
-              />
-            )}
+              )}
+            </g>
           </svg>
           </div>
         </div>
