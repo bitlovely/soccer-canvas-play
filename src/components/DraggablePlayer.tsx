@@ -30,13 +30,15 @@ const DraggablePlayer: React.FC<DraggablePlayerProps> = ({
   const offset = useRef({ x: 0, y: 0 });
 
   const getSVGPoint = useCallback(
-    (clientX: number, clientY: number) => {
+    (clientX: number, clientY: number, el: SVGGraphicsElement | null) => {
       const svg = svgRef.current;
       if (!svg) return { x: 0, y: 0 };
       const pt = svg.createSVGPoint();
       pt.x = clientX;
       pt.y = clientY;
-      const ctm = svg.getScreenCTM();
+      // Use the dragged element's CTM so pointer coords match the local
+      // coordinate system even when parent <g> transforms (e.g., rotation) exist.
+      const ctm = el?.getScreenCTM?.() ?? svg.getScreenCTM();
       if (!ctm) return { x: 0, y: 0 };
       const svgP = pt.matrixTransform(ctm.inverse());
       return { x: svgP.x, y: svgP.y };
@@ -49,7 +51,7 @@ const DraggablePlayer: React.FC<DraggablePlayerProps> = ({
       e.preventDefault();
       e.stopPropagation();
       (e.target as Element).setPointerCapture(e.pointerId);
-      const pt = getSVGPoint(e.clientX, e.clientY);
+      const pt = getSVGPoint(e.clientX, e.clientY, e.currentTarget as SVGGElement);
       offset.current = { x: pt.x - player.x, y: pt.y - player.y };
       setDragging(true);
       onSelect(player.id);
@@ -60,7 +62,7 @@ const DraggablePlayer: React.FC<DraggablePlayerProps> = ({
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (!dragging) return;
-      const pt = getSVGPoint(e.clientX, e.clientY);
+      const pt = getSVGPoint(e.clientX, e.clientY, e.currentTarget as SVGGElement);
       onMove(player.id, pt.x - offset.current.x, pt.y - offset.current.y);
     },
     [dragging, getSVGPoint, player.id, onMove]
